@@ -4,14 +4,50 @@
   <meta charset="UTF-8">
   <title>Mayank AI - Free Chat & Image</title>
   <style>
-    body { font-family: sans-serif; background: #f0f4f8; margin: 0; padding: 20px; }
-    #chatbox { max-height: 400px; overflow-y: auto; padding: 10px; background: #fff; border-radius: 10px; margin-bottom: 10px; }
-    .user { color: #005eff; font-weight: bold; }
-    .ai { color: #2f9e44; margin-bottom: 10px; }
-    input, button { padding: 10px; margin-top: 5px; }
-    input { width: 70%; border: 1px solid #ccc; border-radius: 5px; }
-    button { border: none; background: #007bff; color: white; border-radius: 5px; cursor: pointer; margin-left: 5px; }
-    img { max-width: 100%; margin-top: 10px; border-radius: 8px; }
+    body {
+      font-family: sans-serif;
+      background: #f0f4f8;
+      margin: 0;
+      padding: 20px;
+    }
+    #chatbox {
+      max-height: 400px;
+      overflow-y: auto;
+      padding: 10px;
+      background: #fff;
+      border-radius: 10px;
+      margin-bottom: 10px;
+    }
+    .user {
+      color: #005eff;
+      font-weight: bold;
+    }
+    .ai {
+      color: #2f9e44;
+      margin-bottom: 10px;
+    }
+    input, button {
+      padding: 10px;
+      margin-top: 5px;
+    }
+    input {
+      width: 70%;
+      border: 1px solid #ccc;
+      border-radius: 5px;
+    }
+    button {
+      border: none;
+      background: #007bff;
+      color: white;
+      border-radius: 5px;
+      cursor: pointer;
+      margin-left: 5px;
+    }
+    img {
+      max-width: 100%;
+      margin-top: 10px;
+      border-radius: 8px;
+    }
   </style>
 </head>
 <body>
@@ -24,7 +60,6 @@
   <div id="imageResult"></div>
 
   <script>
-    const openRouterKey = "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";
     const deepAIKey = "196e44d5-8d78-44d9-aac4-12dc025b0ef1";
 
     async function sendMessage() {
@@ -38,20 +73,14 @@
       input.value = "";
 
       try {
-       const res = await fetch("https://corsproxy.io/?https://openrouter.ai/api/v1/chat/completions", {
+        const res = await fetch("https://hf.space/embed/mistralai/Mistral-7B-Instruct-v0.1/api/predict/", {
           method: "POST",
-          headers: {
-            "Authorization": `Bearer ${openRouterKey}`,
-            "Content-Type": "application/json"
-          },
-          body: JSON.stringify({
-            model: "openai/gpt-3.5-turbo",
-            messages: [{ role: "user", content: message }]
-          })
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ data: [message] })
         });
 
-        const data = await res.json();
-        const reply = data.choices?.[0]?.message?.content || "⚠️ No reply.";
+        const result = await res.json();
+        const reply = result.data?.[0] || "⚠️ No reply.";
         document.getElementById("chatbox").innerHTML += `<p class="ai">Mayank: ${reply}</p>`;
       } catch (err) {
         document.getElementById("chatbox").innerHTML += `<p class="ai">Mayank: ⚠️ Error generating response.</p>`;
