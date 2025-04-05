@@ -38,7 +38,7 @@
       input.value = "";
 
       try {
-        const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+       const res = await fetch("https://corsproxy.io/?https://openrouter.ai/api/v1/chat/completions", {
           method: "POST",
           headers: {
             "Authorization": `Bearer ${openRouterKey}`,
