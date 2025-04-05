@@ -54,32 +54,36 @@
       }
     }
 
-    async function generateImage() {
-      const prompt = document.getElementById("userInput").value.trim();
-      if (!prompt) return;
-      document.getElementById("imageResult").innerHTML = "🖼️ Generating image for: \"" + prompt + "\"";
+   async function sendMessage() {
+  const input = document.getElementById("userInput");
+  const message = input.value.trim();
+  if (!message) return;
 
-      try {
-        const res = await fetch("https://api.deepai.org/api/text2img", {
-          method: "POST",
-          headers: {
-            "Api-Key": deepAIKey,
-            "Content-Type": "application/x-www-form-urlencoded"
-          },
-          body: `text=${encodeURIComponent(prompt)}`
-        });
+  const chatbox = document.getElementById("chatbox");
+  chatbox.innerHTML += `<p class="user">You: ${message}</p>`;
+  chatbox.innerHTML += `<p class="ai">Mayank is typing...</p>`;
+  input.value = "";
 
-        const data = await res.json();
-        if (data.output_url) {
-          document.getElementById("imageResult").innerHTML = `<img src="${data.output_url}" alt="AI generated image">`;
-        } else {
-          document.getElementById("imageResult").innerHTML = `⚠️ Could not generate image.`;
-        }
-      } catch (err) {
-        document.getElementById("imageResult").innerHTML = `⚠️ Could not generate image.`;
-        console.error(err);
-      }
-    }
+  try {
+    const res = await fetch("https://mayank-backend-six.vercel.app/api/chat", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        messages: [
+          { role: "system", content: "You are Mayank AI, a friendly and smart assistant." },
+          { role: "user", content: message }
+        ]
+      })
+    });
+
+    const data = await res.json();
+    const reply = data.choices?.[0]?.message?.content || "⚠️ No reply.";
+    chatbox.innerHTML += `<p class="ai">Mayank: ${reply}</p>`;
+  } catch (err) {
+    chatbox.innerHTML += `<p class="ai">Mayank: ⚠️ Error generating response.</p>`;
+    console.error(err);
+  }
+}
   </script>
 </body>
 </html>
