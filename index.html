@@ -10,6 +10,7 @@
       margin: 0;
       padding: 20px;
     }
+
     #chatbox {
       max-height: 400px;
       overflow-y: auto;
@@ -18,23 +19,29 @@
       border-radius: 10px;
       margin-bottom: 10px;
     }
+
     .user {
       color: #005eff;
       font-weight: bold;
     }
+
     .ai {
       color: #2f9e44;
       margin-bottom: 10px;
     }
-    input, button {
+
+    input,
+    button {
       padding: 10px;
       margin-top: 5px;
     }
+
     input {
       width: 70%;
       border: 1px solid #ccc;
       border-radius: 5px;
     }
+
     button {
       border: none;
       background: #007bff;
@@ -43,6 +50,7 @@
       cursor: pointer;
       margin-left: 5px;
     }
+
     img {
       max-width: 100%;
       margin-top: 10px;
@@ -60,8 +68,6 @@
   <div id="imageResult"></div>
 
   <script>
-    const deepAIKey = "196e44d5-8d78-44d9-aac4-12dc025b0ef1";
-
     async function sendMessage() {
       const input = document.getElementById("userInput");
       const message = input.value.trim();
@@ -73,7 +79,7 @@
       input.value = "";
 
       try {
-        const res = await fetch("https://hf.space/embed/mistralai/Mistral-7B-Instruct-v0.1/api/predict/", {
+        const res = await fetch("https://hf.space/embed/tiiuae/falcon-7b-instruct/api/predict/", {
           method: "POST",
           headers: { "Content-Type": "application/json" },
           body: JSON.stringify({ data: [message] })
@@ -94,18 +100,17 @@
       document.getElementById("imageResult").innerHTML = "🖼️ Generating image for: \"" + prompt + "\"";
 
       try {
-        const res = await fetch("https://api.deepai.org/api/text2img", {
+        const res = await fetch("https://hf.space/embed/fofr/anything-v3.0/+/api/predict/", {
           method: "POST",
-          headers: {
-            "Api-Key": deepAIKey,
-            "Content-Type": "application/x-www-form-urlencoded"
-          },
-          body: `text=${encodeURIComponent(prompt)}`
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({ data: [prompt] })
         });
 
-        const data = await res.json();
-        if (data.output_url) {
-          document.getElementById("imageResult").innerHTML = `<img src="${data.output_url}" alt="AI generated image">`;
+        const result = await res.json();
+        const imageURL = result.data?.[0];
+
+        if (imageURL) {
+          document.getElementById("imageResult").innerHTML = `<img src="${imageURL}" alt="AI generated image">`;
         } else {
           document.getElementById("imageResult").innerHTML = `⚠️ Could not generate image.`;
         }
