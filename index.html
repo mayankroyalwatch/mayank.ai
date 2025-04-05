@@ -63,7 +63,8 @@
       document.getElementById("imageResult").innerHTML = "🖼️ Generating image for: \"" + prompt + "\"";
 
       try {
-        const res = await fetch("https://api.deepai.org/api/text2img", {
+        const res = await fetch("https://mayank-backend-six.vercel.app/api/chat", {
+
           method: "POST",
           headers: {
             "Api-Key": deepAIKey,
